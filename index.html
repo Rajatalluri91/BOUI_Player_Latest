@@ -377,9 +377,18 @@ function createTrackItem(index, name, duration) {
   lyricsIcon.innerHTML = `<i class="fas fa-book-open"></i>`;
   lyricsIcon.style.cursor = 'pointer';
   lyricsIcon.onclick = function () {
-    const lBox = document.getElementById('lyrics-' + index);
-    lBox.style.display = (lBox.style.display === 'none' || !lBox.style.display) ? 'block' : 'none';
-  };
+  const lBox = document.getElementById('lyrics-' + index);
+  const isVisible = lBox.style.display === 'block';
+
+  // మొదట అన్ని lyrics-boxల్ని hide చేయండి
+  document.querySelectorAll('.lyrics-box').forEach(box => {
+    box.style.display = 'none';
+  });
+
+  // ఇప్పుడు మాత్రమే toggle చేయండి
+  lBox.style.display = isVisible ? 'none' : 'block';
+};
+
 
   // ⬇️ Download Icon
   const downloadIcon = document.createElement('div');
