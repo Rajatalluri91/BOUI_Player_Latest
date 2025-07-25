@@ -1,0 +1,9 @@
+{
+  "name": "BOUI Songs",
+  "short_name": "BOUI",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#041f31",
+  "theme_color": "#041f31",
+  "icons": []
+}
