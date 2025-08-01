@@ -1,21 +1,40 @@
 
-const CACHE_NAME = 'boui-v1';
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll([
-      './',
-      './index.html',
-      './manifest.json'
-    ]))
-  );
+// sw.js
+
+const CACHE_NAME = 'boui-music-dynamic-cache-v1';
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Activate worker immediately
 });
-self.addEventListener('fetch', event => {
+
+self.addEventListener('activate', (event) => {
+  clients.claim(); // Take control of uncontrolled clients
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request).then(resp => resp || fetch(event.request).then(networkResp => {
-      return caches.open(CACHE_NAME).then(cache => {
-        cache.put(event.request, networkResp.clone());
-        return networkResp;
-      });
-    }))
+    caches.match(event.request).then((cachedRes) => {
+      if (cachedRes) {
+        return cachedRes;
+      }
+
+      return fetch(event.request)
+        .then((networkRes) => {
+          // Cache only same-origin or CORS-allowed responses
+          if (!networkRes || networkRes.status !== 200 || networkRes.type === 'opaque') {
+            return networkRes;
+          }
+
+          return caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkRes.clone());
+            return networkRes;
+          });
+        })
+        .catch(() => {
+          return new Response('Offline – Resource unavailable');
+        });
+    })
   );
 });
