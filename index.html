@@ -1987,29 +1987,19 @@ var listAudio = [
   
 
 </script>
-<script src="app.js"></script>
 
 <script>
-function cacheThisSong(songUrl, lyricsUrl) {
-  if (!('caches' in window)) {
-    alert("❌ Caching not supported in this browser.");
-    return;
-  }
-  caches.open('boui-v1').then(cache => {
-    cache.add(songUrl).then(() => {
-      if (lyricsUrl) {
-        cache.add(lyricsUrl).then(() => {
-          alert("✔ Cached song & lyrics for offline use!");
-        }).catch(() => alert("⚠️ Song cached, but lyrics failed."));
-      } else {
-        alert("✔ Cached song for offline use!");
-      }
-    }).catch(() => {
-      alert("❌ Failed to cache song.");
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then((reg) => {
+      console.log('✅ Service Worker registered: ', reg.scope);
+    })
+    .catch((err) => {
+      console.error('❌ Service Worker registration failed:', err);
     });
-  });
 }
 </script>
+
 
 
 </body>
